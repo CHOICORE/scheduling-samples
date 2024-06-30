@@ -33,7 +33,7 @@ public class DailyScheduleRepository implements PeriodicalScheduleRepository<Sch
 
     @Override
     public List<ScheduleWrapper<DailySchedule>> isScheduledFor(LocalDate date) {
-        return List.of();
+        return findAll();
     }
 
     @SuppressWarnings("unchecked")

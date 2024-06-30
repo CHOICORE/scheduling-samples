@@ -1,12 +1,14 @@
 package me.choicore.demo.schedulingsamples.schedule.repository.jpa.adapter;
 
-import me.choicore.demo.schedulingsamples.schedule.PeriodicalScheduleRepository;
-import me.choicore.demo.schedulingsamples.schedule.Schedule;
-import me.choicore.demo.schedulingsamples.schedule.repository.jpa.OnceScheduleJpaRepository;
-import me.choicore.demo.schedulingsamples.schedule.repository.jpa.WeeklyScheduleJpaRepository;
+import me.choicore.demo.schedulingsamples.schedule.repository.jpa.ScheduleJpaRepository;
+import me.choicore.demo.schedulingsamples.schedule.repository.jpa.adapter.support.TestComplexScheduleRepository;
+import me.choicore.demo.schedulingsamples.schedule.repository.jpa.adapter.support.TestDelegatingPeriodicalScheduleRepository;
+import me.choicore.demo.schedulingsamples.schedule.repository.jpa.adapter.support.TestOnceScheduleRepository;
+import me.choicore.demo.schedulingsamples.schedule.repository.jpa.adapter.support.TestWeeklyScheduleRepository;
 import me.choicore.demo.schedulingsamples.schedule.type.OnceSchedule;
 import me.choicore.demo.schedulingsamples.schedule.type.WeeklySchedule;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,23 +16,28 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.EnumSet;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 class DelegatingPeriodicalScheduleRepositoryTests {
-    @Autowired
-    private OnceScheduleJpaRepository onceScheduleJpaRepository;
-    @Autowired
-    private WeeklyScheduleJpaRepository weeklyScheduleJpaRepository;
-    @Autowired
-    private PeriodicalScheduleRepository<Schedule> strategy;
+    private TestDelegatingPeriodicalScheduleRepository repository;
 
-    // TODO: 롤백 처리 리팩토링
+    @BeforeEach
+    void setUp(
+            @Autowired ScheduleJpaRepository scheduleJpaRepository,
+            @Autowired TestComplexScheduleRepository complexScheduleRepository,
+            @Autowired TestOnceScheduleRepository onceScheduleRepository,
+            @Autowired TestWeeklyScheduleRepository weeklyScheduleRepository,
+            @Autowired DailyScheduleRepository dailyScheduleRepository
+    ) {
+        repository = new TestDelegatingPeriodicalScheduleRepository(scheduleJpaRepository, List.of(complexScheduleRepository, onceScheduleRepository, weeklyScheduleRepository, dailyScheduleRepository));
+    }
+
     @AfterEach
     void tearDown() {
-        onceScheduleJpaRepository.deleteAll();
-        weeklyScheduleJpaRepository.deleteAll();
+        repository.deleteAll();
     }
 
     @Test
@@ -39,7 +46,7 @@ class DelegatingPeriodicalScheduleRepositoryTests {
         var schedule = new OnceSchedule(LocalDate.now());
 
         // when
-        Long save = strategy.save(schedule);
+        Long save = repository.save(schedule);
 
         // then
         assertThat(save).isNotNull().isGreaterThan(0L);
@@ -49,10 +56,10 @@ class DelegatingPeriodicalScheduleRepositoryTests {
     void t2() {
         // given
 
-        strategy.save(new OnceSchedule(LocalDate.now()));
-        strategy.save(new WeeklySchedule(EnumSet.allOf(DayOfWeek.class)));
+        repository.save(new OnceSchedule(LocalDate.now()));
+        repository.save(new WeeklySchedule(EnumSet.allOf(DayOfWeek.class)));
         // when
-        var all = strategy.findAll();
+        var all = repository.findAll();
 
         // then
         assertThat(all).hasSize(2);
@@ -61,11 +68,11 @@ class DelegatingPeriodicalScheduleRepositoryTests {
     @Test
     void t3() {
         // given
-        strategy.save(new OnceSchedule(LocalDate.now()));
-        strategy.save(new WeeklySchedule(EnumSet.allOf(DayOfWeek.class)));
+        repository.save(new OnceSchedule(LocalDate.now()));
+        repository.save(new WeeklySchedule(EnumSet.allOf(DayOfWeek.class)));
 
         // when
-        var all = strategy.isScheduledFor(LocalDate.now());
+        var all = repository.isScheduledFor(LocalDate.now());
 
         // then
         assertThat(all).hasSize(2);
@@ -77,10 +84,10 @@ class DelegatingPeriodicalScheduleRepositoryTests {
         LocalDate date = LocalDate.of(2024, 1, 1);
 
 
-        strategy.save(new OnceSchedule(date));
-        strategy.save(new WeeklySchedule(EnumSet.of(date.getDayOfWeek())));
+        repository.save(new OnceSchedule(date));
+        repository.save(new WeeklySchedule(EnumSet.of(date.getDayOfWeek())));
         // when
-        var all = strategy.isScheduledFor(LocalDate.now());
+        var all = repository.isScheduledFor(LocalDate.now());
 
         // then
         assertThat(all).hasSize(0);

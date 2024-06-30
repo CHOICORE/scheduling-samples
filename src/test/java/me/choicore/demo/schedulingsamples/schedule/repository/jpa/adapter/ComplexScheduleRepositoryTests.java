@@ -1,9 +1,12 @@
 package me.choicore.demo.schedulingsamples.schedule.repository.jpa.adapter;
 
 import me.choicore.demo.schedulingsamples.schedule.ScheduleWrapper;
+import me.choicore.demo.schedulingsamples.schedule.repository.jpa.adapter.support.TestComplexScheduleRepository;
 import me.choicore.demo.schedulingsamples.schedule.type.ComplexSchedule;
 import me.choicore.demo.schedulingsamples.schedule.unit.Week;
 import me.choicore.demo.schedulingsamples.schedule.unit.WeekOfMonth;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,9 +22,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 class ComplexScheduleRepositoryTests {
     @Autowired
-    private ComplexScheduleRepository complexScheduleRepository;
+    private TestComplexScheduleRepository complexScheduleRepository;
+
+    @AfterEach
+    void tearDown() {
+        complexScheduleRepository.deleteAll();
+    }
 
     @Test
+    @DisplayName("복합 스케줄을 저장하고 조회한다.")
     void t1() {
         // given
         Set<WeekOfMonth> weekOfMonths = Set.of(
@@ -41,6 +50,7 @@ class ComplexScheduleRepositoryTests {
     }
 
     @Test
+    @DisplayName("복합 스케줄을 여러 개 저장하고 조회한다.")
     void t2() {
         // given
         Set<WeekOfMonth> weekOfMonths = Set.of(
@@ -60,6 +70,7 @@ class ComplexScheduleRepositoryTests {
     }
 
     @Test
+    @DisplayName("특정 날짜에 스케줄이 등록되어 있는지 확인한다.")
     void t3() {
         // given
         LocalDate date = LocalDate.of(2024, 6, 24);
@@ -71,5 +82,6 @@ class ComplexScheduleRepositoryTests {
 
         // then
         assertThat(found).hasSize(2);
+        found.forEach(it -> assertThat(it.schedule().isScheduledFor(date)).isTrue());
     }
 }
