@@ -18,7 +18,7 @@ import java.util.EnumSet;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
-class CompositeScheduleStrategyTests {
+class DelegatingPeriodicalScheduleRepositoryTests {
     @Autowired
     private OnceScheduleJpaRepository onceScheduleJpaRepository;
     @Autowired
