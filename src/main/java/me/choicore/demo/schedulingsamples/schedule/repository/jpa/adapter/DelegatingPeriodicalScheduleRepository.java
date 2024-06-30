@@ -1,7 +1,8 @@
 package me.choicore.demo.schedulingsamples.schedule.repository.jpa.adapter;
 
-import me.choicore.demo.schedulingsamples.schedule.PeriodicalScheduleStrategy;
+import me.choicore.demo.schedulingsamples.schedule.PeriodicalScheduleRepository;
 import me.choicore.demo.schedulingsamples.schedule.Schedule;
+import me.choicore.demo.schedulingsamples.schedule.ScheduleWrapper;
 import me.choicore.demo.schedulingsamples.schedule.repository.jpa.ScheduleJpaRepository;
 import me.choicore.demo.schedulingsamples.schedule.repository.jpa.entity.ScheduleEntity;
 import org.springframework.stereotype.Service;
@@ -16,31 +17,33 @@ import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 @Service
-public class CompositePeriodicalScheduleStrategy implements PeriodicalScheduleStrategy<Schedule> {
+public class DelegatingPeriodicalScheduleRepository implements PeriodicalScheduleRepository<Schedule> {
     private final ScheduleJpaRepository scheduleJpaRepository;
-    private final Map<Class<? extends Schedule>, PeriodicalScheduleStrategy<? extends Schedule>> strategies = new HashMap<>();
+    private final Map<Class<? extends Schedule>, PeriodicalScheduleRepository<? extends Schedule>> delegates = new HashMap<>();
 
-    public CompositePeriodicalScheduleStrategy(
+    public DelegatingPeriodicalScheduleRepository(
             ScheduleJpaRepository scheduleJpaRepository,
-            List<PeriodicalScheduleStrategy<? extends Schedule>> strategies
+            List<PeriodicalScheduleRepository<? extends Schedule>> delegates
     ) {
         this.scheduleJpaRepository = scheduleJpaRepository;
-        strategies.forEach(strategy -> this.strategies.put(strategy.getSuggestedClass(), strategy));
+        delegates.forEach(strategy -> this.delegates.put(strategy.getScheduleType(), strategy));
     }
 
-    @Override
-    public Long save(Long id, Schedule schedule) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    @SuppressWarnings("unchecked")
+    private <T extends Schedule> PeriodicalScheduleRepository<T> getRepository(T schedule) {
+        return (PeriodicalScheduleRepository<T>) delegates.get(schedule.getClass());
     }
 
     @Override
     @Transactional
     public Long save(Schedule schedule) {
         ScheduleEntity saved = scheduleJpaRepository.save(ScheduleEntity.create(schedule));
-        Long scheduleId = saved.getId();
-        PeriodicalScheduleStrategy<Schedule> strategy = getStrategy(schedule);
-        strategy.save(scheduleId, schedule);
-        return scheduleId;
+        return delegate(saved.getId(), schedule);
+
+    }
+
+    private Long delegate(Long id, Schedule schedule) {
+        return getRepository(schedule).save(new ScheduleWrapper<>(id, schedule));
     }
 
     @SuppressWarnings("unchecked")
@@ -48,7 +51,7 @@ public class CompositePeriodicalScheduleStrategy implements PeriodicalScheduleSt
     @Transactional(readOnly = true)
     public List<Schedule> findAll() {
         List<CompletableFuture<List<? extends Schedule>>> futures = new ArrayList<>();
-        for (PeriodicalScheduleStrategy<? extends Schedule> strategy : strategies.values()) {
+        for (PeriodicalScheduleRepository<? extends Schedule> strategy : delegates.values()) {
             CompletableFuture<List<? extends Schedule>> future = CompletableFuture.supplyAsync(strategy::findAll);
             futures.add(future);
         }
@@ -65,7 +68,7 @@ public class CompositePeriodicalScheduleStrategy implements PeriodicalScheduleSt
     @Transactional(readOnly = true)
     public List<Schedule> isScheduledFor(LocalDate date) {
         List<CompletableFuture<List<? extends Schedule>>> futures = new ArrayList<>();
-        for (PeriodicalScheduleStrategy<? extends Schedule> strategy : strategies.values()) {
+        for (PeriodicalScheduleRepository<? extends Schedule> strategy : delegates.values()) {
             CompletableFuture<List<? extends Schedule>> future = CompletableFuture.supplyAsync(() -> strategy.isScheduledFor(date));
             futures.add(future);
         }
@@ -77,13 +80,9 @@ public class CompositePeriodicalScheduleStrategy implements PeriodicalScheduleSt
                 .join();
     }
 
-    @Override
-    public Class<Schedule> getSuggestedClass() {
-        return Schedule.class;
-    }
-
     @SuppressWarnings("unchecked")
-    private <T extends Schedule> PeriodicalScheduleStrategy<T> getStrategy(T schedule) {
-        return (PeriodicalScheduleStrategy<T>) strategies.get(schedule.getClass());
+    @Override
+    public <C extends Schedule> Class<C> getScheduleType() {
+        return (Class<C>) Schedule.class;
     }
 }

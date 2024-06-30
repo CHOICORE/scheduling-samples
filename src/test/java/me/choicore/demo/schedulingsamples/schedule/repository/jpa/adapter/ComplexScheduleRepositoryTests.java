@@ -1,5 +1,6 @@
 package me.choicore.demo.schedulingsamples.schedule.repository.jpa.adapter;
 
+import me.choicore.demo.schedulingsamples.schedule.ScheduleWrapper;
 import me.choicore.demo.schedulingsamples.schedule.type.ComplexSchedule;
 import me.choicore.demo.schedulingsamples.schedule.unit.Week;
 import me.choicore.demo.schedulingsamples.schedule.unit.WeekOfMonth;
@@ -11,7 +12,6 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.EnumSet;
-import java.util.List;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -33,10 +33,10 @@ class ComplexScheduleRepositoryTests {
         long dummyScheduleId = 1L;
 
         // when
-        complexScheduleRepository.save(dummyScheduleId, schedule);
+        complexScheduleRepository.save(new ScheduleWrapper<>(dummyScheduleId, schedule));
 
         // then
-        List<ComplexSchedule> found = complexScheduleRepository.findAll();
+        var found = complexScheduleRepository.findAll();
         assertThat(found).hasSize(1);
     }
 
@@ -51,11 +51,11 @@ class ComplexScheduleRepositoryTests {
         var schedule = new ComplexSchedule(weekOfMonths, EnumSet.allOf(DayOfWeek.class));
 
         // when
-        complexScheduleRepository.save(1L, schedule);
-        complexScheduleRepository.save(2L, schedule);
+        complexScheduleRepository.save(new ScheduleWrapper<>(1L, schedule));
+        complexScheduleRepository.save(new ScheduleWrapper<>(2L, schedule));
 
         // then
-        List<ComplexSchedule> found = complexScheduleRepository.findAll();
+        var found = complexScheduleRepository.findAll();
         assertThat(found).hasSize(2);
     }
 
@@ -63,11 +63,11 @@ class ComplexScheduleRepositoryTests {
     void t3() {
         // given
         LocalDate date = LocalDate.of(2024, 6, 24);
-        complexScheduleRepository.save(1L, new ComplexSchedule(Set.of(WeekOfMonth.of(Month.of(6), Week.LAST)), EnumSet.allOf(DayOfWeek.class)));
-        complexScheduleRepository.save(2L, new ComplexSchedule(Set.of(WeekOfMonth.of(date)), EnumSet.allOf(DayOfWeek.class)));
+        complexScheduleRepository.save(new ScheduleWrapper<>(1L, new ComplexSchedule(Set.of(WeekOfMonth.of(Month.of(6), Week.LAST)), EnumSet.allOf(DayOfWeek.class))));
+        complexScheduleRepository.save(new ScheduleWrapper<>(2L, new ComplexSchedule(Set.of(WeekOfMonth.of(date)), EnumSet.allOf(DayOfWeek.class))));
 
         // when
-        List<ComplexSchedule> found = complexScheduleRepository.isScheduledFor(date);
+        var found = complexScheduleRepository.isScheduledFor(date);
 
         // then
         assertThat(found).hasSize(2);

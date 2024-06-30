@@ -1,7 +1,9 @@
 package me.choicore.demo.schedulingsamples.schedule.repository.jpa.adapter;
 
 import lombok.RequiredArgsConstructor;
-import me.choicore.demo.schedulingsamples.schedule.PeriodicalScheduleStrategy;
+import me.choicore.demo.schedulingsamples.schedule.PeriodicalScheduleRepository;
+import me.choicore.demo.schedulingsamples.schedule.Schedule;
+import me.choicore.demo.schedulingsamples.schedule.ScheduleWrapper;
 import me.choicore.demo.schedulingsamples.schedule.repository.jpa.ComplexScheduleJpaRepository;
 import me.choicore.demo.schedulingsamples.schedule.repository.jpa.WeeklyScheduleJpaRepository;
 import me.choicore.demo.schedulingsamples.schedule.repository.jpa.entity.ComplexScheduleEntity;
@@ -10,7 +12,6 @@ import me.choicore.demo.schedulingsamples.schedule.type.ComplexSchedule;
 import me.choicore.demo.schedulingsamples.schedule.unit.Week;
 import me.choicore.demo.schedulingsamples.schedule.unit.WeekOfMonth;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.Month;
@@ -23,7 +24,7 @@ import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
-public class ComplexScheduleRepository implements PeriodicalScheduleStrategy<ComplexSchedule> {
+public class ComplexScheduleRepository implements PeriodicalScheduleRepository<ScheduleWrapper<ComplexSchedule>> {
     private final ComplexScheduleJpaRepository complexScheduleJpaRepository;
     private final WeeklyScheduleJpaRepository weeklyScheduleJpaRepository;
 
@@ -35,39 +36,35 @@ public class ComplexScheduleRepository implements PeriodicalScheduleStrategy<Com
         return entities.stream().map(ComplexScheduleEntity::getWeeklyScheduleId).collect(Collectors.toSet());
     }
 
-    private List<ComplexSchedule> getComplexSchedules(Map<Long, List<ComplexScheduleEntity>> scheduleByScheduleId, Map<Long, WeeklyScheduleEntity> grouped) {
-        return scheduleByScheduleId.values().stream().map(
+    private List<ScheduleWrapper<ComplexSchedule>> getComplexSchedules(Map<Long, List<ComplexScheduleEntity>> scheduleByScheduleId, Map<Long, WeeklyScheduleEntity> grouped) {
+        return scheduleByScheduleId.entrySet().stream().map(
                 it -> {
                     Set<WeekOfMonth> weeksOfMonth = new LinkedHashSet<>();
-                    for (ComplexScheduleEntity entities : it) {
+                    List<ComplexScheduleEntity> complexSchedules = it.getValue();
+                    for (ComplexScheduleEntity entities : complexSchedules) {
                         int scheduledMonth = entities.getScheduledMonth();
                         int scheduledWeekOfMonth = entities.getScheduledWeekOfMonth();
                         WeekOfMonth month = WeekOfMonth.of(Month.of(scheduledMonth), Week.valueOf(scheduledWeekOfMonth));
                         weeksOfMonth.add(month);
                     }
 
-                    return new ComplexSchedule(weeksOfMonth, grouped.get(it.getFirst().getWeeklyScheduleId()).toWeeklySchedule());
+                    return new ScheduleWrapper<>(it.getKey(), new ComplexSchedule(weeksOfMonth, grouped.get(complexSchedules.getFirst().getWeeklyScheduleId()).toWeeklySchedule()));
                 }
         ).toList();
     }
 
+
     @Override
-    @Transactional
-    public Long save(Long id, ComplexSchedule schedule) {
+    public Long save(ScheduleWrapper<ComplexSchedule> schedule) {
         WeeklyScheduleEntity weeklyScheduleEntity = weeklyScheduleJpaRepository
-                .save(WeeklyScheduleEntity.specificOf(id, schedule.weeklySchedule()));
-        List<ComplexScheduleEntity> entities = ComplexScheduleEntity.create(id, weeklyScheduleEntity.getScheduleId(), schedule);
+                .save(WeeklyScheduleEntity.specificOf(schedule.id(), schedule.schedule().weeklySchedule()));
+        List<ComplexScheduleEntity> entities = ComplexScheduleEntity.create(schedule.id(), weeklyScheduleEntity.getId(), schedule.schedule());
         complexScheduleJpaRepository.saveAll(entities);
-        return id;
+        return schedule.id();
     }
 
     @Override
-    public Long save(ComplexSchedule schedule) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public List<ComplexSchedule> findAll() {
+    public List<ScheduleWrapper<ComplexSchedule>> findAll() {
         var all = complexScheduleJpaRepository.findAll();
         var weeklyScheduleIds = getWeeklyScheduleIds(all);
         var scheduleByScheduleId = getScheduleByScheduleId(all);
@@ -81,7 +78,7 @@ public class ComplexScheduleRepository implements PeriodicalScheduleStrategy<Com
     }
 
     @Override
-    public List<ComplexSchedule> isScheduledFor(LocalDate date) {
+    public List<ScheduleWrapper<ComplexSchedule>> isScheduledFor(LocalDate date) {
         WeekOfMonth weekOfMonth = WeekOfMonth.of(date);
         var entities = complexScheduleJpaRepository.findByScheduledMonthAndScheduledWeekOfMonth(weekOfMonth.month().getValue(), weekOfMonth.week().numberOfWeek());
         if (weekOfMonth.isLastWeek(date)) {
@@ -96,7 +93,8 @@ public class ComplexScheduleRepository implements PeriodicalScheduleStrategy<Com
     }
 
     @Override
-    public Class<ComplexSchedule> getSuggestedClass() {
-        return ComplexSchedule.class;
+    @SuppressWarnings("unchecked")
+    public <C extends Schedule> Class<C> getScheduleType() {
+        return (Class<C>) ComplexSchedule.class;
     }
 }

@@ -1,6 +1,6 @@
 package me.choicore.demo.schedulingsamples.schedule.repository.jpa.adapter;
 
-import me.choicore.demo.schedulingsamples.schedule.PeriodicalScheduleStrategy;
+import me.choicore.demo.schedulingsamples.schedule.PeriodicalScheduleRepository;
 import me.choicore.demo.schedulingsamples.schedule.Schedule;
 import me.choicore.demo.schedulingsamples.schedule.repository.jpa.OnceScheduleJpaRepository;
 import me.choicore.demo.schedulingsamples.schedule.repository.jpa.WeeklyScheduleJpaRepository;
@@ -24,7 +24,7 @@ class CompositeScheduleStrategyTests {
     @Autowired
     private WeeklyScheduleJpaRepository weeklyScheduleJpaRepository;
     @Autowired
-    private PeriodicalScheduleStrategy<Schedule> strategy;
+    private PeriodicalScheduleRepository<Schedule> strategy;
 
     // TODO: 롤백 처리 리팩토링
     @AfterEach

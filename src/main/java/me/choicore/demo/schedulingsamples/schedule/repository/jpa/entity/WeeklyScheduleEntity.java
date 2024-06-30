@@ -104,8 +104,6 @@ public class WeeklyScheduleEntity {
             dayOfWeeks.add(DayOfWeek.SUNDAY);
         }
 
-        return new WeeklySchedule(
-                dayOfWeeks
-        );
+        return new WeeklySchedule(dayOfWeeks);
     }
 }

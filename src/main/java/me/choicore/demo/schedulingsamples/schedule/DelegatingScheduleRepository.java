@@ -10,21 +10,21 @@ import java.util.List;
 @Repository
 @RequiredArgsConstructor
 public class DelegatingScheduleRepository implements ScheduleRepository {
-    private final PeriodicalScheduleStrategy<Schedule> periodicalScheduleStrategy;
+    private final PeriodicalScheduleRepository<Schedule> periodicalScheduleRepository;
 
     @Override
     @Transactional
     public Long save(Schedule schedule) {
-        return periodicalScheduleStrategy.save(schedule);
+        return periodicalScheduleRepository.save(schedule);
     }
 
     @Override
     public List<Schedule> findAll() {
-        return periodicalScheduleStrategy.findAll();
+        return periodicalScheduleRepository.findAll();
     }
 
     @Override
     public List<Schedule> isScheduledFor(LocalDate date) {
-        return periodicalScheduleStrategy.isScheduledFor(date);
+        return periodicalScheduleRepository.isScheduledFor(date);
     }
 }

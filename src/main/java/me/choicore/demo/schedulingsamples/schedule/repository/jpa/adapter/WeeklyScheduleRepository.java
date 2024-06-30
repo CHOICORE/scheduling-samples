@@ -1,8 +1,10 @@
 package me.choicore.demo.schedulingsamples.schedule.repository.jpa.adapter;
 
 import lombok.RequiredArgsConstructor;
-import me.choicore.demo.schedulingsamples.schedule.PeriodicalScheduleStrategy;
+import me.choicore.demo.schedulingsamples.schedule.PeriodicalScheduleRepository;
 import me.choicore.demo.schedulingsamples.schedule.Periodicity;
+import me.choicore.demo.schedulingsamples.schedule.Schedule;
+import me.choicore.demo.schedulingsamples.schedule.ScheduleWrapper;
 import me.choicore.demo.schedulingsamples.schedule.repository.jpa.WeeklyScheduleJpaRepository;
 import me.choicore.demo.schedulingsamples.schedule.repository.jpa.entity.WeeklyScheduleEntity;
 import me.choicore.demo.schedulingsamples.schedule.type.WeeklySchedule;
@@ -15,31 +17,26 @@ import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
-public class WeeklyScheduleRepository implements PeriodicalScheduleStrategy<WeeklySchedule> {
+public class WeeklyScheduleRepository implements PeriodicalScheduleRepository<ScheduleWrapper<WeeklySchedule>> {
     private final WeeklyScheduleJpaRepository weeklyScheduleJpaRepository;
 
     @Override
-    public Long save(Long id, WeeklySchedule schedule) {
-        WeeklyScheduleEntity weeklyScheduleEntity = WeeklyScheduleEntity.create(id, schedule);
-        WeeklyScheduleEntity saved = weeklyScheduleJpaRepository.save(weeklyScheduleEntity);
-        return saved.getId();
+    public Long save(ScheduleWrapper<WeeklySchedule> schedule) {
+        weeklyScheduleJpaRepository.save(WeeklyScheduleEntity.create(schedule.id(), schedule.schedule()));
+        return schedule.id();
     }
 
     @Override
-    public Long save(WeeklySchedule schedule) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public List<WeeklySchedule> findAll() {
+    public List<ScheduleWrapper<WeeklySchedule>> findAll() {
         return weeklyScheduleJpaRepository
                 .findAll()
                 .stream()
-                .map(WeeklyScheduleEntity::toWeeklySchedule).collect(Collectors.toList());
+                .map(it -> new ScheduleWrapper<>(it.getScheduleId(), it.toWeeklySchedule()))
+                .toList();
     }
 
     @Override
-    public List<WeeklySchedule> isScheduledFor(LocalDate date) {
+    public List<ScheduleWrapper<WeeklySchedule>> isScheduledFor(LocalDate date) {
         DayOfWeek dayOfWeek = date.getDayOfWeek();
         var schedules = switch (dayOfWeek) {
             case MONDAY -> weeklyScheduleJpaRepository.findByPeriodicityAndScheduledMonday(Periodicity.WEEKLY, true);
@@ -54,13 +51,12 @@ public class WeeklyScheduleRepository implements PeriodicalScheduleStrategy<Week
             case SUNDAY -> weeklyScheduleJpaRepository.findByPeriodicityAndScheduledSunday(Periodicity.WEEKLY, true);
         };
 
-        return schedules.stream().map(WeeklyScheduleEntity::toWeeklySchedule).collect(Collectors.toList());
+        return schedules.stream().map(it -> new ScheduleWrapper<>(it.getScheduleId(), it.toWeeklySchedule())).collect(Collectors.toList());
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public Class<WeeklySchedule> getSuggestedClass() {
-        return WeeklySchedule.class;
+    public <C extends Schedule> Class<C> getScheduleType() {
+        return (Class<C>) WeeklySchedule.class;
     }
-
-
 }

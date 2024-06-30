@@ -1,7 +1,9 @@
 package me.choicore.demo.schedulingsamples.schedule.repository.jpa.adapter;
 
 import lombok.RequiredArgsConstructor;
-import me.choicore.demo.schedulingsamples.schedule.PeriodicalScheduleStrategy;
+import me.choicore.demo.schedulingsamples.schedule.PeriodicalScheduleRepository;
+import me.choicore.demo.schedulingsamples.schedule.Schedule;
+import me.choicore.demo.schedulingsamples.schedule.ScheduleWrapper;
 import me.choicore.demo.schedulingsamples.schedule.repository.jpa.OnceScheduleJpaRepository;
 import me.choicore.demo.schedulingsamples.schedule.repository.jpa.entity.OnceScheduleEntity;
 import me.choicore.demo.schedulingsamples.schedule.type.OnceSchedule;
@@ -13,34 +15,34 @@ import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
-public class OnceScheduleRepository implements PeriodicalScheduleStrategy<OnceSchedule> {
+public class OnceScheduleRepository implements PeriodicalScheduleRepository<ScheduleWrapper<OnceSchedule>> {
     private final OnceScheduleJpaRepository onceScheduleJpaRepository;
 
     @Override
-    public Long save(Long id, OnceSchedule schedule) {
-        OnceScheduleEntity onceScheduleEntity = OnceScheduleEntity.create(id, schedule);
-        return onceScheduleJpaRepository.save(onceScheduleEntity).getId();
+    public Long save(ScheduleWrapper<OnceSchedule> schedule) {
+        onceScheduleJpaRepository.save(OnceScheduleEntity.create(schedule.id(), schedule.schedule()));
+        return schedule.id();
     }
 
     @Override
-    public Long save(OnceSchedule schedule) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public List<ScheduleWrapper<OnceSchedule>> findAll() {
+        List<OnceScheduleEntity> entities = onceScheduleJpaRepository.findAll();
+        return entities.stream().map(
+                it -> new ScheduleWrapper<>(it.getScheduleId(), it.toOnceSchedule())
+        ).collect(Collectors.toList());
     }
 
     @Override
-    public List<OnceSchedule> findAll() {
-        List<OnceScheduleEntity> onceEntities = onceScheduleJpaRepository.findAll();
-        return onceEntities.stream().map(OnceScheduleEntity::toOnceSchedule).collect(Collectors.toList());
+    public List<ScheduleWrapper<OnceSchedule>> isScheduledFor(LocalDate date) {
+        List<OnceScheduleEntity> entities = onceScheduleJpaRepository.findByDate(date);
+        return entities.stream().map(
+                it -> new ScheduleWrapper<>(it.getScheduleId(), it.toOnceSchedule())
+        ).collect(Collectors.toList());
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public List<OnceSchedule> isScheduledFor(LocalDate date) {
-        List<OnceScheduleEntity> onceEntities = onceScheduleJpaRepository.findByDate(date);
-        return onceEntities.stream().map(OnceScheduleEntity::toOnceSchedule).collect(Collectors.toList());
-    }
-
-    @Override
-    public Class<OnceSchedule> getSuggestedClass() {
-        return OnceSchedule.class;
+    public <C extends Schedule> Class<C> getScheduleType() {
+        return (Class<C>) OnceSchedule.class;
     }
 }
