@@ -49,4 +49,25 @@ class WeekOfMonthTests {
         Assertions.assertThat(sut.month()).isEqualTo(Month.AUGUST);
         Assertions.assertThat(sut.week()).isEqualTo(Week.FIRST);
     }
+
+    @Test
+    @DisplayName("해당 날짜가 해당 월의 마지막 주차에 포함되는지 확인")
+    void t5() {
+        LocalDate date = LocalDate.of(2024, 6, 24);
+        WeekOfMonth lastWeek = WeekOfMonth.of(Month.JUNE, Week.LAST);
+        Assertions.assertThat(lastWeek.isWithin(date)).isTrue();
+
+        WeekOfMonth weekOfMonth = WeekOfMonth.of(date);
+        Assertions.assertThat(weekOfMonth.isWithin(date)).isTrue();
+    }
+
+    @Test
+    @DisplayName("해당 날짜가 해당 월의 4주차, 5주차 마지막 주차로 예상되는 경우 마지막 주차에 포함되는지 확인")
+    void t6() {
+        LocalDate date = LocalDate.of(2024, 4, 28);
+        WeekOfMonth sut = WeekOfMonth.of(date);
+        Assertions.assertThat(sut.month()).isEqualTo(Month.APRIL);
+        Assertions.assertThat(sut.week()).isEqualTo(Week.FOURTH);
+        Assertions.assertThat(sut.isLastWeek(date)).isTrue();
+    }
 }

@@ -25,11 +25,7 @@ public class CompositePeriodicalScheduleStrategy implements PeriodicalScheduleSt
             List<PeriodicalScheduleStrategy<? extends Schedule>> strategies
     ) {
         this.scheduleJpaRepository = scheduleJpaRepository;
-        strategies.forEach(strategy -> this.strategies.put(getScheduleClass(strategy), strategy));
-    }
-
-    private <T extends Schedule> Class<T> getScheduleClass(PeriodicalScheduleStrategy<T> strategy) {
-        return strategy.getSuggestedClass();
+        strategies.forEach(strategy -> this.strategies.put(strategy.getSuggestedClass(), strategy));
     }
 
     @Override

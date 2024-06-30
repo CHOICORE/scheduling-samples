@@ -56,14 +56,23 @@ public record WeekOfMonth(
 
     public boolean isWithin(LocalDate date) {
         if (Week.LAST == this.week) {
-            LocalDate lastDayOfMonth = date.with(TemporalAdjusters.lastDayOfMonth());
-            if (lastDayOfMonth.getDayOfWeek().getValue() < MINIMAL_DAYS_IN_FIRST_WEEK) {
-                LocalDate firstDayOfLastWeek = lastDayOfMonth.with(TemporalAdjusters.previousOrSame(FIRST_DAY_OF_WEEK));
-                LocalDate adjustedPreviousLastDayOfLastWeek = firstDayOfLastWeek.minusDays(8);
-                return date.isAfter(adjustedPreviousLastDayOfLastWeek) && date.isBefore(firstDayOfLastWeek);
-            }
+            return isLastWeek(date);
+        }
+        if (Week.FOURTH == this.week || Week.FIFTH == this.week) {
+            return isLastWeek(date) || this.equals(WeekOfMonth.of(date));
         }
 
         return this.equals(WeekOfMonth.of(date));
+    }
+
+    public boolean isLastWeek(LocalDate date) {
+        LocalDate lastDayOfMonth = date.with(TemporalAdjusters.lastDayOfMonth());
+        LocalDate firstDayOfLastWeek = lastDayOfMonth.with(TemporalAdjusters.previousOrSame(FIRST_DAY_OF_WEEK));
+        if (lastDayOfMonth.getDayOfWeek().getValue() < MINIMAL_DAYS_IN_FIRST_WEEK) {
+            LocalDate adjustedPreviousLastDayOfLastWeek = firstDayOfLastWeek.minusDays(8);
+            return date.isAfter(adjustedPreviousLastDayOfLastWeek) && date.isBefore(firstDayOfLastWeek);
+        } else {
+            return date.isAfter(lastDayOfMonth.minusDays(7)) && date.isBefore(lastDayOfMonth.plusDays(1));
+        }
     }
 }
