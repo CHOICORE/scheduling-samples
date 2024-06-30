@@ -39,17 +39,17 @@ class ComplexScheduleJpaRepositoryTests {
         WeeklyScheduleEntity weeklyScheduleEntity = weeklyScheduleJpaRepository
                 .save(WeeklyScheduleEntity.specificOf(dummyScheduleId, schedule.weeklySchedule()));
 
-        List<ComplexScheduleEntity> entities = ComplexScheduleEntity.create(dummyScheduleId, weeklyScheduleEntity.getScheduleId(), schedule);
+        List<ComplexScheduleEntity> entities = ComplexScheduleEntity.create(dummyScheduleId, weeklyScheduleEntity.getId(), schedule);
 
         // when
         List<ComplexScheduleEntity> saved = complexScheduleJpaRepository.saveAll(entities);
 
         // then
         assertThat(saved).hasSize(weekOfMonths.size());
-//        assertThat(saved).allMatch(entity ->
-//                entity.getId() != null
-//                        && entity.getId() > 0L
-//                        && entity.getWeeklyScheduleId().equals(weeklyScheduleEntity.getId())
-//        );
+        assertThat(saved).allMatch(entity ->
+                entity.getId() != null
+                        && entity.getId() > 0L
+                        && entity.getWeeklyScheduleId().equals(weeklyScheduleEntity.getId())
+        );
     }
 }
