@@ -9,21 +9,20 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.Set;
 
-public class ComplexSchedule implements Schedule {
-    /**
-     * 주차 (1 ~ 5, 마지막 주차: -1)
-     */
-    private final Set<WeekOfMonth> weeksOfMonth;
-
-    /**
-     * 요일
-     */
-    private final Set<DayOfWeek> daysOfWeek;
-
+/**
+ * @param weeksOfMonth 주차 (1 ~ 5, 마지막 주차: -1)
+ * @param daysOfWeek   요일
+ */
+public record ComplexSchedule(
+        Set<WeekOfMonth> weeksOfMonth,
+        WeeklySchedule weeklySchedule
+) implements Schedule {
     public ComplexSchedule(Set<WeekOfMonth> weeksOfMonth, Set<DayOfWeek> daysOfWeek) {
-        validate(weeksOfMonth, daysOfWeek);
-        this.weeksOfMonth = weeksOfMonth;
-        this.daysOfWeek = daysOfWeek;
+        this(weeksOfMonth, new WeeklySchedule(daysOfWeek));
+    }
+
+    public ComplexSchedule {
+        validate(weeksOfMonth, weeklySchedule.daysOfWeek());
     }
 
     private void validate(Set<WeekOfMonth> weeksOfMonth, Set<DayOfWeek> daysOfWeek) {
@@ -38,11 +37,12 @@ public class ComplexSchedule implements Schedule {
     @Override
     public boolean isScheduledFor(@Nonnull LocalDate date) {
         return weeksOfMonth.stream().anyMatch(f -> f.isWithin(date))
-                && daysOfWeek.contains(date.getDayOfWeek());
+                && weeklySchedule.daysOfWeek().contains(date.getDayOfWeek());
     }
 
     @Override
     public Periodicity getPeriodicity() {
         return Periodicity.SPECIFIC;
     }
+
 }

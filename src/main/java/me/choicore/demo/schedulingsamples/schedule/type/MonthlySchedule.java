@@ -1,6 +1,7 @@
 package me.choicore.demo.schedulingsamples.schedule.type;
 
 import jakarta.annotation.Nonnull;
+import lombok.Getter;
 import me.choicore.demo.schedulingsamples.schedule.Periodicity;
 import me.choicore.demo.schedulingsamples.schedule.Schedule;
 import me.choicore.demo.schedulingsamples.schedule.unit.Day;
@@ -8,14 +9,15 @@ import me.choicore.demo.schedulingsamples.schedule.unit.Day;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.EnumSet;
+import java.util.Objects;
 import java.util.Set;
 
+@Getter
 public class MonthlySchedule implements Schedule {
     /**
      * 월 (1 ~ 12)
      */
     private final Set<Month> months;
-
     /**
      * 일 (1 ~ 31)
      */
@@ -29,6 +31,19 @@ public class MonthlySchedule implements Schedule {
 
     public MonthlySchedule(Set<Day> days) {
         this(EnumSet.allOf(Month.class), days);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MonthlySchedule that = (MonthlySchedule) o;
+        return Objects.equals(getMonths(), that.getMonths()) && Objects.equals(getDays(), that.getDays());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getMonths(), getDays());
     }
 
     private void validate(Set<Month> months, Set<Day> days) {

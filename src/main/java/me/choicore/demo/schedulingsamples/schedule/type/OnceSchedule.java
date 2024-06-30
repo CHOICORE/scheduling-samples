@@ -6,17 +6,14 @@ import me.choicore.demo.schedulingsamples.schedule.Schedule;
 
 import java.time.LocalDate;
 
-public class OnceSchedule implements Schedule {
-    /**
-     * 날짜
-     */
-    private final LocalDate date;
-
-    public OnceSchedule(LocalDate date) {
+/**
+ * @param date 날짜
+ */
+public record OnceSchedule(LocalDate date) implements Schedule {
+    public OnceSchedule {
         if (date == null) {
             throw new IllegalArgumentException("Date cannot be null");
         }
-        this.date = date;
     }
 
     @Override

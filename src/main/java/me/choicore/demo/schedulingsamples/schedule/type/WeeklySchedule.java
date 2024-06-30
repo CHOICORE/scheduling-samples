@@ -8,14 +8,14 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.Set;
 
-public class WeeklySchedule implements Schedule {
-    private final Set<DayOfWeek> daysOfWeek;
-
-    public WeeklySchedule(Set<DayOfWeek> daysOfWeek) {
+/**
+ * @param daysOfWeek 요일
+ */
+public record WeeklySchedule(Set<DayOfWeek> daysOfWeek) implements Schedule {
+    public WeeklySchedule {
         if (daysOfWeek == null || daysOfWeek.isEmpty()) {
             throw new IllegalArgumentException("Days of week cannot be null or empty");
         }
-        this.daysOfWeek = daysOfWeek;
     }
 
     @Override
