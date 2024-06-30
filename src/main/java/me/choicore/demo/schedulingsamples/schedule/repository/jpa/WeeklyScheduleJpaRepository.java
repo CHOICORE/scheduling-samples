@@ -8,9 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface WeeklyScheduleJpaRepository extends JpaRepository<WeeklyScheduleEntity, Long> {
-
     List<WeeklyScheduleEntity> findAllByPeriodicity(@Nonnull final Periodicity periodicity);
-
 
     List<WeeklyScheduleEntity> findByPeriodicityAndScheduledMonday(@Nonnull final Periodicity periodicity, boolean scheduledMonday);
 
@@ -25,5 +23,4 @@ public interface WeeklyScheduleJpaRepository extends JpaRepository<WeeklySchedul
     List<WeeklyScheduleEntity> findByPeriodicityAndScheduledSaturday(@Nonnull final Periodicity periodicity, boolean scheduledSaturday);
 
     List<WeeklyScheduleEntity> findByPeriodicityAndScheduledSunday(@Nonnull final Periodicity periodicity, boolean scheduledSunday);
-
 }
