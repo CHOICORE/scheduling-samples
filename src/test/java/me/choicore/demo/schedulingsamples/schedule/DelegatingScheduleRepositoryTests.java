@@ -1,7 +1,7 @@
 package me.choicore.demo.schedulingsamples.schedule;
 
-import me.choicore.demo.schedulingsamples.schedule.repository.jpa.OnceScheduleJpaRepository;
-import me.choicore.demo.schedulingsamples.schedule.repository.jpa.WeeklyScheduleJpaRepository;
+import me.choicore.demo.schedulingsamples.schedule.infrastructure.jpa.OnceScheduleJpaRepository;
+import me.choicore.demo.schedulingsamples.schedule.infrastructure.jpa.WeeklyScheduleJpaRepository;
 import me.choicore.demo.schedulingsamples.schedule.type.OnceSchedule;
 import me.choicore.demo.schedulingsamples.schedule.type.WeeklySchedule;
 import org.assertj.core.api.Assertions;

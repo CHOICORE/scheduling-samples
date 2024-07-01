@@ -14,8 +14,6 @@ public class ScheduleService {
     }
 
     public List<Schedule> getSchedulesFor(LocalDate date) {
-        return scheduleRepository.findAll().stream()
-                .filter(schedule -> schedule.isScheduledFor(date))
-                .toList();
+        return scheduleRepository.isScheduledFor(date);
     }
 }
