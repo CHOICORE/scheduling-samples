@@ -1,7 +1,7 @@
 package me.choicore.demo.schedulingsamples.schedule.infrastructure.jpa.adapter.support;
 
-import me.choicore.demo.schedulingsamples.schedule.PeriodicalScheduleRepository;
-import me.choicore.demo.schedulingsamples.schedule.Schedule;
+import me.choicore.demo.schedulingsamples.schedule.domain.PeriodicalScheduleRepository;
+import me.choicore.demo.schedulingsamples.schedule.domain.Schedule;
 import me.choicore.demo.schedulingsamples.schedule.infrastructure.jpa.ScheduleJpaRepository;
 import me.choicore.demo.schedulingsamples.schedule.infrastructure.jpa.adapter.DelegatingPeriodicalScheduleRepository;
 

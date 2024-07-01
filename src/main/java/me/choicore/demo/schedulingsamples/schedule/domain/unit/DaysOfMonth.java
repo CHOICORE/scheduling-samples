@@ -1,4 +1,4 @@
-package me.choicore.demo.schedulingsamples.schedule.unit;
+package me.choicore.demo.schedulingsamples.schedule.domain.unit;
 
 import java.time.Month;
 import java.util.Set;

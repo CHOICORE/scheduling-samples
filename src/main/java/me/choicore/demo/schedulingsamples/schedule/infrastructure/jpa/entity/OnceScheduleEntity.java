@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import me.choicore.demo.schedulingsamples.schedule.type.OnceSchedule;
+import me.choicore.demo.schedulingsamples.schedule.domain.type.OnceSchedule;
 
 import java.time.LocalDate;
 

@@ -1,9 +1,9 @@
-package me.choicore.demo.schedulingsamples.schedule;
+package me.choicore.demo.schedulingsamples.schedule.domain;
 
-import me.choicore.demo.schedulingsamples.schedule.type.*;
-import me.choicore.demo.schedulingsamples.schedule.unit.Day;
-import me.choicore.demo.schedulingsamples.schedule.unit.Week;
-import me.choicore.demo.schedulingsamples.schedule.unit.WeekOfMonth;
+import me.choicore.demo.schedulingsamples.schedule.domain.type.*;
+import me.choicore.demo.schedulingsamples.schedule.domain.unit.Day;
+import me.choicore.demo.schedulingsamples.schedule.domain.unit.Week;
+import me.choicore.demo.schedulingsamples.schedule.domain.unit.WeekOfMonth;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;

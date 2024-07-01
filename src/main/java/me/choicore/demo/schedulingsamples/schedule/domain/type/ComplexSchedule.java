@@ -1,9 +1,9 @@
-package me.choicore.demo.schedulingsamples.schedule.type;
+package me.choicore.demo.schedulingsamples.schedule.domain.type;
 
 import jakarta.annotation.Nonnull;
-import me.choicore.demo.schedulingsamples.schedule.Periodicity;
-import me.choicore.demo.schedulingsamples.schedule.Schedule;
-import me.choicore.demo.schedulingsamples.schedule.unit.WeekOfMonth;
+import me.choicore.demo.schedulingsamples.schedule.domain.Periodicity;
+import me.choicore.demo.schedulingsamples.schedule.domain.Schedule;
+import me.choicore.demo.schedulingsamples.schedule.domain.unit.WeekOfMonth;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -11,7 +11,7 @@ import java.util.Set;
 
 /**
  * @param weeksOfMonth 주차 (1 ~ 5, 마지막 주차: -1)
- * @param daysOfWeek   요일
+ * @param weeklySchedule   요일
  */
 public record ComplexSchedule(
         Set<WeekOfMonth> weeksOfMonth,

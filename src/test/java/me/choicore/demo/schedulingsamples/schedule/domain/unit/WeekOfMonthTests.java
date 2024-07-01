@@ -1,5 +1,7 @@
 package me.choicore.demo.schedulingsamples.schedule.unit;
 
+import me.choicore.demo.schedulingsamples.schedule.domain.unit.Week;
+import me.choicore.demo.schedulingsamples.schedule.domain.unit.WeekOfMonth;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

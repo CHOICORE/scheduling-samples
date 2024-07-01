@@ -1,6 +1,6 @@
-package me.choicore.demo.schedulingsamples.schedule.type;
+package me.choicore.demo.schedulingsamples.schedule.domain.type;
 
-import me.choicore.demo.schedulingsamples.schedule.unit.Day;
+import me.choicore.demo.schedulingsamples.schedule.domain.unit.Day;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;

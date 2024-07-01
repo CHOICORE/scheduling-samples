@@ -1,8 +1,9 @@
-package me.choicore.demo.schedulingsamples.schedule.type;
+package me.choicore.demo.schedulingsamples.schedule.domain.type;
+
 
 import jakarta.annotation.Nullable;
-import me.choicore.demo.schedulingsamples.schedule.Periodicity;
-import me.choicore.demo.schedulingsamples.schedule.Schedule;
+import me.choicore.demo.schedulingsamples.schedule.domain.Periodicity;
+import me.choicore.demo.schedulingsamples.schedule.domain.Schedule;
 
 import java.time.LocalDate;
 

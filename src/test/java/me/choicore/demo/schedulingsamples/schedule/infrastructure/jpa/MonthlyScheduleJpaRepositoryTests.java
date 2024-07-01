@@ -1,8 +1,8 @@
 package me.choicore.demo.schedulingsamples.schedule.infrastructure.jpa;
 
+import me.choicore.demo.schedulingsamples.schedule.domain.type.MonthlySchedule;
+import me.choicore.demo.schedulingsamples.schedule.domain.unit.Day;
 import me.choicore.demo.schedulingsamples.schedule.infrastructure.jpa.entity.MonthlyScheduleEntity;
-import me.choicore.demo.schedulingsamples.schedule.type.MonthlySchedule;
-import me.choicore.demo.schedulingsamples.schedule.unit.Day;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

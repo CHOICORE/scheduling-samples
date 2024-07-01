@@ -1,4 +1,4 @@
-package me.choicore.demo.schedulingsamples.schedule.type;
+package me.choicore.demo.schedulingsamples.schedule.domain.type;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

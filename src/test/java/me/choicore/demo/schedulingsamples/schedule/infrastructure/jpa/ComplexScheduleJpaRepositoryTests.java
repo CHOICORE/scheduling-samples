@@ -1,10 +1,10 @@
 package me.choicore.demo.schedulingsamples.schedule.infrastructure.jpa;
 
+import me.choicore.demo.schedulingsamples.schedule.domain.type.ComplexSchedule;
+import me.choicore.demo.schedulingsamples.schedule.domain.unit.Week;
+import me.choicore.demo.schedulingsamples.schedule.domain.unit.WeekOfMonth;
 import me.choicore.demo.schedulingsamples.schedule.infrastructure.jpa.entity.ComplexScheduleEntity;
 import me.choicore.demo.schedulingsamples.schedule.infrastructure.jpa.entity.WeeklyScheduleEntity;
-import me.choicore.demo.schedulingsamples.schedule.type.ComplexSchedule;
-import me.choicore.demo.schedulingsamples.schedule.unit.Week;
-import me.choicore.demo.schedulingsamples.schedule.unit.WeekOfMonth;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;

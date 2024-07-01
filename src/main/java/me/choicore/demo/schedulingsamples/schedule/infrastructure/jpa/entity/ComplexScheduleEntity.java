@@ -4,8 +4,8 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import me.choicore.demo.schedulingsamples.schedule.type.ComplexSchedule;
-import me.choicore.demo.schedulingsamples.schedule.unit.WeekOfMonth;
+import me.choicore.demo.schedulingsamples.schedule.domain.type.ComplexSchedule;
+import me.choicore.demo.schedulingsamples.schedule.domain.unit.WeekOfMonth;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,12 +1,12 @@
 package me.choicore.demo.schedulingsamples.schedule.infrastructure.jpa.adapter;
 
+import me.choicore.demo.schedulingsamples.schedule.domain.type.OnceSchedule;
+import me.choicore.demo.schedulingsamples.schedule.domain.type.WeeklySchedule;
 import me.choicore.demo.schedulingsamples.schedule.infrastructure.jpa.ScheduleJpaRepository;
 import me.choicore.demo.schedulingsamples.schedule.infrastructure.jpa.adapter.support.TestComplexScheduleRepository;
 import me.choicore.demo.schedulingsamples.schedule.infrastructure.jpa.adapter.support.TestDelegatingPeriodicalScheduleRepository;
 import me.choicore.demo.schedulingsamples.schedule.infrastructure.jpa.adapter.support.TestOnceScheduleRepository;
 import me.choicore.demo.schedulingsamples.schedule.infrastructure.jpa.adapter.support.TestWeeklyScheduleRepository;
-import me.choicore.demo.schedulingsamples.schedule.type.OnceSchedule;
-import me.choicore.demo.schedulingsamples.schedule.type.WeeklySchedule;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,6 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.temporal.TemporalAdjusters;
 import java.util.EnumSet;
 import java.util.List;
 
@@ -87,7 +88,7 @@ class DelegatingPeriodicalScheduleRepositoryTests {
         repository.save(new OnceSchedule(date));
         repository.save(new WeeklySchedule(EnumSet.of(date.getDayOfWeek())));
         // when
-        var all = repository.isScheduledFor(LocalDate.now());
+        var all = repository.isScheduledFor(LocalDate.now().with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY)));
 
         // then
         assertThat(all).hasSize(0);

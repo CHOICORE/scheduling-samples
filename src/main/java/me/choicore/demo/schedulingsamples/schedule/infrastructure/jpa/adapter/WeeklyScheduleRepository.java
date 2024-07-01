@@ -1,19 +1,20 @@
 package me.choicore.demo.schedulingsamples.schedule.infrastructure.jpa.adapter;
 
 import lombok.RequiredArgsConstructor;
-import me.choicore.demo.schedulingsamples.schedule.PeriodicalScheduleRepository;
-import me.choicore.demo.schedulingsamples.schedule.Periodicity;
-import me.choicore.demo.schedulingsamples.schedule.Schedule;
-import me.choicore.demo.schedulingsamples.schedule.ScheduleWrapper;
+import me.choicore.demo.schedulingsamples.schedule.domain.PeriodicalScheduleRepository;
+import me.choicore.demo.schedulingsamples.schedule.domain.Periodicity;
+import me.choicore.demo.schedulingsamples.schedule.domain.Schedule;
+import me.choicore.demo.schedulingsamples.schedule.domain.ScheduleWrapper;
+import me.choicore.demo.schedulingsamples.schedule.domain.type.WeeklySchedule;
 import me.choicore.demo.schedulingsamples.schedule.infrastructure.jpa.WeeklyScheduleJpaRepository;
 import me.choicore.demo.schedulingsamples.schedule.infrastructure.jpa.entity.WeeklyScheduleEntity;
-import me.choicore.demo.schedulingsamples.schedule.type.WeeklySchedule;
 import org.springframework.stereotype.Component;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
+
 
 @Component
 @RequiredArgsConstructor

@@ -1,10 +1,10 @@
 package me.choicore.demo.schedulingsamples.schedule.infrastructure.jpa.adapter;
 
-import me.choicore.demo.schedulingsamples.schedule.ScheduleWrapper;
+import me.choicore.demo.schedulingsamples.schedule.domain.ScheduleWrapper;
+import me.choicore.demo.schedulingsamples.schedule.domain.type.ComplexSchedule;
+import me.choicore.demo.schedulingsamples.schedule.domain.unit.Week;
+import me.choicore.demo.schedulingsamples.schedule.domain.unit.WeekOfMonth;
 import me.choicore.demo.schedulingsamples.schedule.infrastructure.jpa.adapter.support.TestComplexScheduleRepository;
-import me.choicore.demo.schedulingsamples.schedule.type.ComplexSchedule;
-import me.choicore.demo.schedulingsamples.schedule.unit.Week;
-import me.choicore.demo.schedulingsamples.schedule.unit.WeekOfMonth;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

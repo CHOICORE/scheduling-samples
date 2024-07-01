@@ -1,4 +1,4 @@
-package me.choicore.demo.schedulingsamples.schedule;
+package me.choicore.demo.schedulingsamples.schedule.domain;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -19,11 +19,13 @@ public class DelegatingScheduleRepository implements ScheduleRepository {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Schedule> findAll() {
         return periodicalScheduleRepository.findAll();
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Schedule> isScheduledFor(LocalDate date) {
         return periodicalScheduleRepository.isScheduledFor(date);
     }

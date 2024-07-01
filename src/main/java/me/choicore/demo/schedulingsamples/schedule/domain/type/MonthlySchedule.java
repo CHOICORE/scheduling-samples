@@ -1,10 +1,10 @@
-package me.choicore.demo.schedulingsamples.schedule.type;
+package me.choicore.demo.schedulingsamples.schedule.domain.type;
 
 import jakarta.annotation.Nonnull;
 import lombok.Getter;
-import me.choicore.demo.schedulingsamples.schedule.Periodicity;
-import me.choicore.demo.schedulingsamples.schedule.Schedule;
-import me.choicore.demo.schedulingsamples.schedule.unit.Day;
+import me.choicore.demo.schedulingsamples.schedule.domain.Periodicity;
+import me.choicore.demo.schedulingsamples.schedule.domain.Schedule;
+import me.choicore.demo.schedulingsamples.schedule.domain.unit.Day;
 
 import java.time.LocalDate;
 import java.time.Month;

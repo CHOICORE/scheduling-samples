@@ -1,4 +1,4 @@
-package me.choicore.demo.schedulingsamples.schedule;
+package me.choicore.demo.schedulingsamples.schedule.domain;
 
 import lombok.RequiredArgsConstructor;
 

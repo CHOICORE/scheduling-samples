@@ -1,4 +1,4 @@
-package me.choicore.demo.schedulingsamples.schedule;
+package me.choicore.demo.schedulingsamples.schedule.domain;
 
 import java.time.LocalDate;
 import java.util.List;

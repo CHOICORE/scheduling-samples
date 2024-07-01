@@ -1,6 +1,6 @@
 package me.choicore.demo.schedulingsamples.schedule.infrastructure.jpa;
 
-import me.choicore.demo.schedulingsamples.schedule.Periodicity;
+import me.choicore.demo.schedulingsamples.schedule.domain.Periodicity;
 import me.choicore.demo.schedulingsamples.schedule.infrastructure.jpa.entity.ScheduleEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 

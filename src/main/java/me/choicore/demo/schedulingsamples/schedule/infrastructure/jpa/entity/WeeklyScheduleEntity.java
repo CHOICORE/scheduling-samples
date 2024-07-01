@@ -5,9 +5,8 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import me.choicore.demo.schedulingsamples.schedule.Periodicity;
-import me.choicore.demo.schedulingsamples.schedule.type.WeeklySchedule;
+import me.choicore.demo.schedulingsamples.schedule.domain.Periodicity;
+import me.choicore.demo.schedulingsamples.schedule.domain.type.WeeklySchedule;
 
 import java.time.DayOfWeek;
 import java.util.EnumSet;
@@ -34,7 +33,7 @@ public class WeeklyScheduleEntity {
     private boolean scheduledSunday;
 
     public WeeklyScheduleEntity(
-            @NonNull final Long scheduleId,
+            @Nonnull final Long scheduleId,
             final boolean scheduledMonday,
             final boolean scheduledTuesday,
             final boolean scheduledWednesday,

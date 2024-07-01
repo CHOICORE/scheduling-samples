@@ -1,8 +1,8 @@
 package me.choicore.demo.schedulingsamples.schedule.infrastructure.jpa.adapter;
 
-import me.choicore.demo.schedulingsamples.schedule.ScheduleWrapper;
+import me.choicore.demo.schedulingsamples.schedule.domain.ScheduleWrapper;
+import me.choicore.demo.schedulingsamples.schedule.domain.type.OnceSchedule;
 import me.choicore.demo.schedulingsamples.schedule.infrastructure.jpa.adapter.support.TestOnceScheduleRepository;
-import me.choicore.demo.schedulingsamples.schedule.type.OnceSchedule;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
